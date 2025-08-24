@@ -132,9 +132,9 @@ export default function Home() {
           >
             <Title>
               <div className="text-center font-light pt-8 sm:pt-0 text-[0.9em] sm:text-[0.85em] sm:leading-[1.2em] sm:pb-6">
-                Sonus makes everyone
+                Sonus helps everyone
                 <br />
-                flow beyond language.
+                flow effortlessly beyond language barriers.
               </div>
             </Title>
 
@@ -157,7 +157,12 @@ export default function Home() {
       <motion.div initial={{ opacity: 0, y: 12 }} animate={pageControls}>
         <SectionLayout>
           <div className="my-2 w-full font-extralight flex justify-center flex-col text-center sm:text-left">
-            We are creating a realtime interpreter that makes conversations
+            Our goal is to empower a world without language barriers through
+            real-time voice translation that preserves your unique voice,
+            connecting humanity across cultures in authentic conversation.
+            <br />
+            <br />
+            {/* We are creating a realtime interpreter that makes conversations
             across languages feel effortless, natural, and human.
             <br />
             <br />
@@ -170,7 +175,7 @@ export default function Home() {
             <br />
             Language divides us more than we realize.
             <br />
-            We believe voices should bridge people, not build barriers.
+            We believe voices should bridge people, not build barriers. */}
           </div>
         </SectionLayout>
       </motion.div>
