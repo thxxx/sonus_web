@@ -64,14 +64,6 @@ enum LANGUAGE_CODE {
   HE = "he",
   HI = "hi",
 }
-
-enum PROVIDER_TYPE {
-  OPENAI = "openai",
-  GEMINI = "gemini",
-  DEEPGRAM = "deepgram",
-  CUSTOM = "custom",
-}
-
 const modelId = "gpt-4o-transcribe"; // STT
 const llmId = "gpt-4.1-mini"; // translator
 
@@ -399,7 +391,7 @@ export default function WebRealtimeTranscriber() {
           llm_output_token_count,
         } = msg;
         const sttCost =
-          modelId === "gpt-4.1-mini"
+          modelId === "gpt-4o-transcribe"
             ? (connected_time / 60) * 0.003
             : (connected_time / 60) * 0.006;
         const cost =
@@ -501,7 +493,7 @@ export default function WebRealtimeTranscriber() {
       const audioB64 = int16ToBase64(pcm16);
 
       // send chunk
-      if (ws.readyState === WebSocket.OPEN) {
+      if (ws?.readyState === WebSocket.OPEN) {
         ws.send(
           JSON.stringify({
             type: "input_audio_buffer.append",
