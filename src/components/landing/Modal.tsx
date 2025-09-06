@@ -83,14 +83,14 @@ export function BottomSheetModal({
     >
       {/* dimmed backdrop */}
       <button
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-xmain/50"
         onClick={onClose}
         aria-label="Close"
       />
       {/* bottom sheet */}
       <div
         ref={sheetRef}
-        className="absolute left-0 right-0 bottom-0 mx-auto w-full max-w-lg rounded-lg bg-white shadow-2xl
+        className="absolute left-0 right-0 bottom-0 mx-auto w-full max-w-lg rounded-lg bg-xopp shadow-2xl
                   translate-y-0 animate-[slideUp_420ms_ease-out] overflow-hidden"
       >
         <div className="p-5">
@@ -105,7 +105,7 @@ export function BottomSheetModal({
             placeholder="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md border border-black/10 bg-white px-4 py-3 text-black placeholder-black/40
+            className="w-full rounded-md border border-xmain/10 bg-xopp px-4 py-3 text-xmain placeholder-black/40
                        focus:outline-none focus:ring-black/20"
             autoFocus
           />
@@ -115,7 +115,7 @@ export function BottomSheetModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-light text-black/60 hover:text-black"
+              className="px-4 py-2 text-sm font-light text-xmain/60 hover:text-xmain"
             >
               Cancel
             </button>
@@ -123,7 +123,7 @@ export function BottomSheetModal({
               type="button"
               disabled={submitting}
               onClick={handleSubmit}
-              className="px-4 py-2 text-sm font-light rounded-lg bg-black text-white disabled:opacity-90"
+              className="px-4 py-2 text-sm font-light rounded-lg bg-xmain text-opp disabled:opacity-90"
             >
               {submitting ? "Submitting" : "Submit"}
             </button>

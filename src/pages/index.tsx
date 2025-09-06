@@ -62,7 +62,7 @@ export default function Home() {
   const initialLineWidth = isMobile ? "70vw" : "320px";
 
   return (
-    <div className="font-poppins bg-black text-white min-h-screen">
+    <div className="font-poppins bg-xmain text-xopp min-h-screen">
       <Analytics />
       <Head>
         <title>Sonus</title>
@@ -87,7 +87,7 @@ export default function Home() {
           {/* Fullscreen black overlay container for intro animation */}
           <div className="w-full flex items-center justify-center">
             {/* <motion.div
-              className="relative overflow-hidden bg-black/0 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
+              className="relative overflow-hidden bg-xmain/0 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
               initial={{
                 opacity: 0,
                 width: initialLineWidth,
@@ -141,11 +141,11 @@ export default function Home() {
             <div className="w-full flex justify-center flex-col items-center gap-3 mt-12 sm:mt-8">
               <button
                 onClick={() => setOpen(true)}
-                className="bg-white text-black rounded-3xl py-3 px-6 cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+                className="bg-xopp text-xmain rounded-3xl py-3 px-6 cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
               >
                 Join waitlist
               </button>
-              <div className="font-light text-white/60 italic text-[0.9em]">
+              <div className="font-light text-xopp/60 italic text-[0.9em]">
                 Launching in 2025 — stay tuned.
               </div>
             </div>

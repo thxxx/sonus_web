@@ -19,13 +19,13 @@ const Header = () => {
   return (
     <div className="flex flex-col justify-start items-start fixed top-32 left-24 px-2 sm:px-6 w-[320px] opacity-0 sm:opacity-100">
       <div className="font-light text-xl sm:ml-6 flex flex-row items-center gap-2">
-        <div className="h-[24px] bg-white rounded-sm">
+        <div className="h-[24px] bg-xopp rounded-sm">
           <img src="/images/logo.png" className="w-[24px] rounded-sm" />
         </div>
         <div>Sonus</div>
       </div>
       <div></div>
-      {/* <div className="cursor-pointer py-2 px-4 sm:py-4 sm:px-6 text-[1em] sm:text-[1.2em] h-full rounded-full font-medium text-white">
+      {/* <div className="cursor-pointer py-2 px-4 sm:py-4 sm:px-6 text-[1em] sm:text-[1.2em] h-full rounded-full font-medium text-opp">
         For you
       </div> */}
     </div>

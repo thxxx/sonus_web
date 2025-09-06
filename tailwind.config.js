@@ -3,6 +3,13 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      colors: {
+        xgray: "#71767A", // 기본 색상
+        xprimary: "#1D9BF0", // 변형 색상
+        xmain: "#000000", // 변형 색상
+        xopp: "#FFFFFF", // 변형 색상
+        xgray: "#161616", // 변형 색상
+      },
       keyframes: {
         upDowns: {
           "0%, 100%": { transform: "translateY(0)" },

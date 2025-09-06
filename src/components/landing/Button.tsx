@@ -8,8 +8,9 @@ type ButtomProps = {
 const Button = ({ children, onClick }: ButtomProps) => {
   return (
     <button
-      className="py-3 px-8 rounded-full bg-black text-white text-[20px] cursor-pointer"
-      onClick={() => onClick()}>
+      className="py-3 px-8 rounded-full bg-xmain text-opp text-[20px] cursor-pointer"
+      onClick={() => onClick()}
+    >
       {children}
     </button>
   );

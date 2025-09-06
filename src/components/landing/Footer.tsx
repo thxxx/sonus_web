@@ -24,7 +24,7 @@ const Footer = () => {
   }, [copied]);
 
   return (
-    <footer className="w-full bg-black text-white/90">
+    <footer className="w-full bg-xmain text-opp/90">
       {/* subtle top glow */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
@@ -39,7 +39,7 @@ const Footer = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setOpen(true)}
-              className="rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/90 hover:bg-white/10 hover:border-white/25 active:scale-[0.99] transition"
+              className="rounded-2xl border border-xopp/15 bg-xopp/5 px-4 py-2 text-sm font-medium text-opp/90 hover:bg-xopp/10 hover:border-xopp/25 active:scale-[0.99] transition"
             >
               Join
             </button>
@@ -49,7 +49,7 @@ const Footer = () => {
                 await navigator.clipboard.writeText("khj605123@gmail.com");
                 setCopied(true);
               }}
-              className="rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/90 hover:bg-white/10 hover:border-white/25 active:scale-[0.99] transition"
+              className="rounded-2xl border border-xopp/15 bg-xopp/5 px-4 py-2 text-sm font-medium text-opp/90 hover:bg-xopp/10 hover:border-xopp/25 active:scale-[0.99] transition"
             >
               Contact
             </button>
@@ -57,11 +57,11 @@ const Footer = () => {
         </div>
 
         {/* middle text */}
-        <div className="mt-6 text-sm font-light text-white/60">
+        <div className="mt-6 text-sm font-light text-opp/60">
           State-of-the-art realtime interpreter coming soon.
         </div>
 
-        <div className="mt-3 text-xs text-white/40">Delaware 19808</div>
+        <div className="mt-3 text-xs text-opp/40">Delaware 19808</div>
       </div>
 
       {/* toast */}
@@ -70,7 +70,7 @@ const Footer = () => {
           copied ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
         }`}
       >
-        <div className="rounded-full bg-white/10 backdrop-blur px-4 py-2 text-sm text-white/90 border border-white/15 shadow-lg">
+        <div className="rounded-full bg-xopp/10 backdrop-blur px-4 py-2 text-sm text-opp/90 border border-xopp/15 shadow-lg">
           Email copied to clipboard
         </div>
       </div>
