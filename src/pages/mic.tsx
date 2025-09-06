@@ -242,8 +242,9 @@ export default function WebRealtimeTranscriber() {
   // ---------------------------
   const openSocket = useCallback(async () => {
     const endPoint = target === "mic" ? "ws" : "speakerws";
-    const url = `wss://61.107.202.12:5000/${endPoint}`;
-    // const url = `wss://${SERVER_NS}-5000.proxy.runpod.net/${endPoint}`;
+    // const url = `wss://ws.thesonus.xyz/${endPoint}`;
+    // const url = `wss://61.107.202.12:5000/${endPoint}`;
+    const url = `wss://qxsuomndj8cec9-5000.proxy.runpod.net/${endPoint}`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
     console.log("openSocket");
