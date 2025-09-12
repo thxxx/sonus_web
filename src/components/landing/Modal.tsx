@@ -21,7 +21,7 @@ export function BottomSheetModal({
     if (!email) return;
 
     try {
-      await log("is_join");
+      // await log("is_join");
       const body = {
         email: email,
       };

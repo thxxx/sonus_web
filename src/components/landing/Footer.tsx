@@ -53,7 +53,7 @@ const Footer = () => {
 
             <button
               onClick={async () => {
-                await navigator.clipboard.writeText("khj605123@gmail.com");
+                await navigator.clipboard.writeText("khj@asksonus.com");
                 setCopied(true);
               }}
               className="rounded-2xl border border-xopp/15 bg-xopp/5 px-4 py-2 text-sm font-medium text-opp/90 hover:bg-xopp/10 hover:border-xopp/25 active:scale-[0.99] transition"
