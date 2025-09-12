@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import { Analytics } from "@vercel/analytics/react";
+// import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { isMobile } from "react-device-detect";
 import Header from "@/components/landing/Header";
-import SectionLayout from "@/components/landing/SectionLayout";
-import Title from "@/components/landing/Title";
 import Footer from "@/components/landing/Footer";
 import "../globals.css";
 import "../styles/radix.css";
@@ -76,6 +75,7 @@ export default function Home() {
   return (
     <div className="bg-xmain text-xopp min-h-screen">
       <Analytics />
+
       <Head>
         <title>Sonus</title>
         <meta
