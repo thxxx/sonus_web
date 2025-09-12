@@ -240,7 +240,8 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center gap-3 text-center">
           <div className="text-3xl font-semibold">Hear the difference</div>
           <div className="text-[20px] font-light text-gray-700">
-            Compare Sonus' voice preservation and speed with industry leaders
+            Compare Sonus&apos; voice preservation and speed with industry
+            leaders
           </div>
         </div>
         <div className="flex flex-row items-start justify-between w-full max-w-[1240px]">
