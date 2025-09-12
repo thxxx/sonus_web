@@ -42,7 +42,7 @@ export default function UseCasesSection() {
         <p className="mx-auto mt-3 max-w-3xl leading-relaxed text-gray-500">
           From international business meetings to personal travel, Sonus breaks
           down language barriers while preserving your authentic voice and
-          personality.
+          personality
         </p>
       </header>
 

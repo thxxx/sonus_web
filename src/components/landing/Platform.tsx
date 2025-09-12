@@ -42,7 +42,7 @@ export default function Integrations() {
       </h2>
       <p className="mx-auto mt-3 max-w-2xl text-gray-500">
         Seamlessly integrate with the communication tools you already use for
-        meetings, collaboration, and more.
+        meetings, collaboration, and more
       </p>
 
       <div className="mt-10 grid grid-cols-2 gap-8 md:grid-cols-4">
