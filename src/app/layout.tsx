@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Sonus",
   description: "Make everyone communicate beyond language.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon-new.ico",
   },
 };
 

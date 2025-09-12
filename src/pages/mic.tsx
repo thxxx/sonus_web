@@ -19,50 +19,32 @@ import VoiceConditionModal, {
   VoiceSample,
 } from "@/components/landing/VoiceConditionModal";
 
-/**
- * WebRealtimeTranscriber.tsx
- * -------------------------------------------------------------
- * A single-file, browser-only React + TypeScript + Tailwind app that
- * combines the functionality of your Electron main (custom.ts) and
- * renderer (client.ts) into one component for the web.
- *
- * What it does
- * - Opens a WebSocket to your real-time STT/translation/TTS server
- * - Captures mic audio (getUserMedia + WebAudio), does simple energy VAD
- * - Streams base64 PCM16LE chunks (resampled to 24 kHz) to the server
- * - Receives transcript/translation deltas and TTS audio, plays seamlessly
- * - Provides Start/Stop, language/provider selectors, and simple logs
- *
- * Tailwind
- * - Uses Tailwind utility classes for layout & styling
- *
- * Notes
- * - Replace SERVER_NS with your actual Runpod proxy namespace
- * - Ensure the page is served over HTTPS to access the mic
- * - The server is assumed to accept messages identical to custom.ts
- */
-
-// ---------------------------
-// Types / constants
-// ---------------------------
-
 type STTTarget = "mic" | "speaker";
 
 enum LANGUAGE_CODE {
-  KO = "ko",
-  EN = "en",
-  JA = "ja",
-  FR = "fr",
-  DE = "de",
-  ES = "es",
-  IT = "it",
-  PT_PT = "pt-pt",
-  PT_BR = "pt-br",
-  RU = "ru",
-  AR = "ar",
-  TR = "tr",
-  HE = "he",
-  HI = "hi",
+  Arabic = "ar",
+  Danish = "da",
+  German = "de",
+  Greek = "el",
+  English = "en",
+  Spanish = "es",
+  Finnish = "fi",
+  French = "fr",
+  Hebrew = "he",
+  Hindi = "hi",
+  Italian = "it",
+  Japanese = "ja",
+  Korean = "ko",
+  Malay = "ms",
+  Dutch = "nl",
+  Norwegian = "no",
+  Polish = "pl",
+  Portuguese = "pt",
+  Russian = "ru",
+  Swedish = "sv",
+  Swahili = "sw",
+  Turkish = "tr",
+  Chinese = "zh",
 }
 const modelId = "gpt-4o-transcribe"; // STT
 const llmId = "gpt-4.1-mini"; // translator
@@ -180,12 +162,17 @@ function createVAD(
 // ---------------------------
 export default function WebRealtimeTranscriber() {
   const [recording, setRecording] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [connected, setConnected] = useState(false);
+
   const [languageCode, setLanguageCode] = useState<LANGUAGE_CODE>(
-    LANGUAGE_CODE.KO
+    LANGUAGE_CODE.Korean
+  );
+  const [outputLanguageCode, setOutputLanguageCode] = useState<LANGUAGE_CODE>(
+    LANGUAGE_CODE.English
   );
   const [target, setTarget] = useState<STTTarget>("mic");
   const [isLogging, setIsLogging] = useState(false);
+  const [isSessionLoading, setIsSessionLoading] = useState(false);
 
   const [scripting, setScripting] = useState("");
   const [lastSentence, setLastSentence] = useState("");
@@ -223,8 +210,8 @@ export default function WebRealtimeTranscriber() {
     setMyTranslates([]);
     setTtsLog("");
   }, []);
-
   const scriptRef = useRef<string>("");
+  const usedForTranslationRef = useRef<string>("");
 
   // ---------------------------
   // TTS Player setup
@@ -242,23 +229,25 @@ export default function WebRealtimeTranscriber() {
   // ---------------------------
   const openSocket = useCallback(async () => {
     const endPoint = target === "mic" ? "ws" : "speakerws";
-    // const url = `wss://ws.thesonus.xyz/${endPoint}`;
-    // const url = `wss://61.107.202.12:5000/${endPoint}`;
-    const url = `wss://qxsuomndj8cec9-5000.proxy.runpod.net/${endPoint}`;
+    // const url = `ws://ws.thesonus.xyz:5000/${endPoint}`;
+    const url = `ws://61.107.202.12:5000/${endPoint}`;
+    // const url = `wss://qxsuomndj8cec9-5000.proxy.runpod.net/${endPoint}`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
     console.log("openSocket");
 
     ws.onopen = () => {
+      console.log("테스트");
       // start session
       const openMsg = {
         type: "scriptsession.start",
-        language: languageCode,
+        in_language: languageCode,
+        out_language: outputLanguageCode,
         model: modelId,
         use_filler: isLogging,
       };
       ws.send(JSON.stringify(openMsg));
-      console.log("openSocket");
+      setIsSessionLoading(true);
 
       // 2) ---- ADD: 세션 시작 직후, voice condition 업로드 ----
       (async () => {
@@ -319,6 +308,11 @@ export default function WebRealtimeTranscriber() {
         console.log("msg", msg);
       }
 
+      if (msgType === "scriptsession.started") {
+        setConnected(true);
+        setIsSessionLoading(false);
+      }
+
       if (msgType === "latency.pong") {
         const t3 = Date.now();
         const { t0, t1, t2 } = msg; // server recv/send(ms, server clock)
@@ -340,31 +334,49 @@ export default function WebRealtimeTranscriber() {
 
       if (msgType === "delta") {
         setScripting(msg.text ?? "");
-      } else if (msgType === "stop-talking") {
-        setScripting("");
       } else if (msgType === "transcript") {
-        // final sentence chunk
         setLastSentence((prev) =>
           prev ? prev + " " + (msg.text ?? "") : msg.text ?? ""
         );
-        scriptRef.current = msg.text ?? "";
+        scriptRef.current += " " + msg.text;
         setScripting("");
       } else if (msgType === "translated") {
         if (!msg.is_final) return;
         let translatedText = String(msg.text ?? "").replace(/<SKIP>/g, "");
         if (!translatedText.trim()) return;
+        const usedForTranslation = msg.script;
+        usedForTranslationRef.current += " " + usedForTranslation;
 
+        // 사용할 때
         translatedText =
-          (lastTranslation ? lastTranslation + " " : "") + translatedText;
-        // if (translatedText.includes("<END>")) {
-        const clean = translatedText.replace("<END>", "").trim();
-        setMyTranslates((ts) => [...ts, clean]);
-        setLastTranslation("");
-        setLastSentence("");
-        scriptRef.current = "";
-        // } else {
-        //   setLastTranslation(translatedText);
-        // }
+          (lastTranslationRef.current ? lastTranslationRef.current + " " : "") +
+          translatedText;
+
+        if (translatedText.includes("<END>")) {
+          const clean = translatedText.replace("<END>", "").trim();
+          if (usedForTranslation !== null) {
+            setMyTranscripts((ts) => [...ts, usedForTranslation]);
+          } else {
+            setMyTranscripts((ts) => [...ts, usedForTranslationRef.current]);
+            usedForTranslationRef.current = "";
+            scriptRef.current = scriptRef.current.slice(
+              usedForTranslationRef.current.length - scriptRef.current.length
+            );
+          }
+          setMyTranslates((ts) => [...ts, clean]);
+          setLastTranslation("");
+          setLastSentence((prev) =>
+            prev.slice(usedForTranslationRef.current.length ?? 0)
+          );
+          // scriptRef.current = scriptRef.current.slice(
+          //   usedForTranslationRef.current.length ?? 0
+          // );
+        } else {
+          setLastTranslation(translatedText);
+          // scriptRef.current = scriptRef.current.slice(
+          //   usedForTranslation?.length ?? 0
+          // );
+        }
       } else if (msgType === "tts_audio") {
         // measure TTS latency from voice end to first audio
         if (voiceEndTimeRef.current) {
@@ -415,6 +427,7 @@ export default function WebRealtimeTranscriber() {
         window.clearInterval(hbRef.current);
         hbRef.current = null;
       }
+      setConnected(false);
       wsRef.current = null;
     };
 
@@ -422,26 +435,20 @@ export default function WebRealtimeTranscriber() {
       console.error("Socket error:", err);
       alert("Error! 알려주세요. 아마 서버가 꺼졌거나 등등");
     };
-  }, [languageCode, target, ALPHA, voiceSample]);
+  }, [languageCode, target, ALPHA, voiceSample, outputLanguageCode]);
+
+  const lastTranslationRef = useRef("");
 
   useEffect(() => {
-    if (lastSentence != "") setMyTranscripts((ts) => [...ts, lastSentence]);
-  }, [lastSentence]);
-
-  const closeSocket = useCallback(() => {
-    const ws = wsRef.current;
-    if (ws && ws.readyState === WebSocket.OPEN) ws.close();
-    if (hbRef.current) {
-      window.clearInterval(hbRef.current);
-      hbRef.current = null;
-    }
-    wsRef.current = null;
-  }, []);
+    lastTranslationRef.current = lastTranslation;
+  }, [lastTranslation]);
 
   // ---------------------------
   // Mic capture & push loop
   // ---------------------------
   const stopMic = useCallback(() => {
+    sendAudioCommit();
+
     procNodeRef.current?.disconnect();
     audioCtxRef.current?.close();
     mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
@@ -519,36 +526,58 @@ export default function WebRealtimeTranscriber() {
     procNodeRef.current = proc;
   }, [sendAudioCommit]);
 
-  // ---------------------------
-  // Start/Stop button
-  // ---------------------------
-  const onToggle = useCallback(async () => {
-    if (recording) {
-      setLoading(true);
-      // Stop capture & close session on server
-      try {
-        const ws = wsRef.current;
-        if (ws && ws.readyState === WebSocket.OPEN)
-          ws.send(JSON.stringify({ type: "session.close" }));
-      } catch {}
-      stopMic();
-      closeSocket();
-      setRecording(false);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
+  const startSession = useCallback(async () => {
+    if (connected || isSessionLoading) return;
     resetAll();
-    await openSocket();
-    setRecording(true);
-    await startMic();
-    setLoading(false);
-  }, [recording, openSocket, startMic, stopMic, closeSocket, resetAll]);
+    await openSocket(); // 세션 연결만 수행
+  }, [connected, isSessionLoading, openSocket, resetAll]);
 
-  // ---------------------------
-  // UI
-  // ---------------------------
+  const stopSession = useCallback(() => {
+    // 세션만 종료 (마이크는 그대로 두되, 아래에서 안전하게 정리)
+    const ws = wsRef.current;
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      try {
+        ws.send(JSON.stringify({ type: "session.close" }));
+      } catch {}
+      ws.close();
+    }
+    if (hbRef.current) {
+      window.clearInterval(hbRef.current);
+      hbRef.current = null;
+    }
+    wsRef.current = null;
+    setIsSessionLoading(false);
+    setConnected(false);
+
+    // 세션이 끊기면 마이크도 의미 없으니 같이 끄는 것을 권장
+    if (recording) {
+      stopMic();
+      setRecording(false);
+    }
+  }, [recording, stopMic]);
+
+  const startMicOnly = useCallback(async () => {
+    if (!connected) {
+      // 세션 없이 마이크만 켜면 보낼 곳이 없음
+      // 1) 자동으로 세션 먼저 열기:
+      await startSession();
+      // 2) 또는 사용자에게 알림 띄우고 return:
+      // alert("세션이 연결되어 있지 않습니다. 먼저 세션을 시작하세요.");
+      // return;
+    }
+    if (recording) return;
+    await startMic();
+    setRecording(true);
+  }, [connected, recording, startMic, startSession]);
+
+  const stopMicOnly = useCallback(() => {
+    if (!recording) return;
+    // 남은 버퍼를 확정 커밋하고 싶으면 선택:
+    // try { sendAudioCommit(); } catch {}
+    stopMic();
+    setRecording(false);
+  }, [recording, stopMic /*, sendAudioCommit*/]);
+
   return (
     <div className="w-full min-h-screen bg-xmain text-xopp p-4">
       <div className="max-w-3xl mx-auto space-y-4">
@@ -558,16 +587,29 @@ export default function WebRealtimeTranscriber() {
           </h1>
           <div className="flex items-center gap-2">
             <button
-              onClick={onToggle}
-              disabled={loading}
+              onClick={recording ? stopMicOnly : startMicOnly}
               className={`px-4 py-2 rounded-2xl border border-white/70 shadow-sm flex items-center gap-2 ${
-                loading ? "opacity-50" : "hover:bg-white/10"
+                isSessionLoading ? "opacity-50" : "hover:bg-white/10"
               } ${recording ? "text-red-400" : "text-xopp"}`}
             >
-              {loading ? "Loading…" : recording ? "Stop" : "Start"}
+              {recording ? "Stop" : "Send Audio"}
               <span
                 className={`ml-1 inline-block w-2 h-2 rounded-full ${
                   recording ? "bg-red-500" : "bg-white/80"
+                }`}
+              />
+            </button>
+            <button
+              onClick={connected ? stopSession : startSession}
+              disabled={isSessionLoading}
+              className={`px-4 py-2 rounded-2xl border border-white/70 shadow-sm flex items-center gap-2 ${
+                isSessionLoading ? "opacity-50" : "hover:bg-white/10"
+              } ${recording ? "text-red-400" : "text-xopp"}`}
+            >
+              {isSessionLoading ? "Loading…" : connected ? "Stop" : "Start"}
+              <span
+                className={`ml-1 inline-block w-2 h-2 rounded-full ${
+                  connected ? "bg-red-500" : "bg-white/80"
                 }`}
               />
             </button>
@@ -587,9 +629,9 @@ export default function WebRealtimeTranscriber() {
           있습니다.
         </div>
 
-        {/* <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
-            <label className="text-sm text-xopp/80">Language</label>
+            <label className="text-sm text-xopp/80">Input Language(My)</label>
             <select
               className="bg-transparent outline-none ml-auto"
               value={languageCode}
@@ -602,30 +644,24 @@ export default function WebRealtimeTranscriber() {
               ))}
             </select>
           </div>
-
           <div className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
-            <label className="text-sm text-xopp/80">Provider</label>
+            <label className="text-sm text-xopp/80">Output Language</label>
             <select
               className="bg-transparent outline-none ml-auto"
-              value={providerType}
-              onChange={(e) => setProviderType(e.target.value as PROVIDER_TYPE)}
+              value={outputLanguageCode}
+              onChange={(e) =>
+                setOutputLanguageCode(e.target.value as LANGUAGE_CODE)
+              }
             >
-              <option className="bg-neutral-900" value={PROVIDER_TYPE.OPENAI}>
-                OpenAI
-              </option>
-              <option className="bg-neutral-900" value={PROVIDER_TYPE.GEMINI}>
-                Gemini
-              </option>
-              <option className="bg-neutral-900" value={PROVIDER_TYPE.DEEPGRAM}>
-                Deepgram
-              </option>
-              <option className="bg-neutral-900" value={PROVIDER_TYPE.CUSTOM}>
-                Custom
-              </option>
+              {Object.entries(LANGUAGE_CODE).map(([k, v]) => (
+                <option className="bg-neutral-900" key={k} value={v}>
+                  {k}
+                </option>
+              ))}
             </select>
           </div>
 
-          <div className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
+          {/* <div className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
             <label className="text-sm text-xopp/80">Target</label>
             <select
               className="bg-transparent outline-none ml-auto"
@@ -639,8 +675,8 @@ export default function WebRealtimeTranscriber() {
                 Speaker
               </option>
             </select>
-          </div>
-        </section> */}
+          </div> */}
+        </section>
 
         <section className="flex items-center gap-3">
           <button

@@ -1,8 +1,19 @@
-import React from "react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 
 const Header = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setIsScrolled(scrollY > 800); // 200px 이상 스크롤되면 true
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const scrollToPosition = () => {
     const documentHeight = document.documentElement.scrollHeight;
     const windowHeight = window.innerHeight;
@@ -11,23 +22,26 @@ const Header = () => {
       : documentHeight - windowHeight - 250;
 
     window.scrollTo({
-      top: targetPosition > 0 ? targetPosition : 0, // Ensure we don't scroll to a negative position
-      behavior: "smooth", // Smooth scrolling
+      top: targetPosition > 0 ? targetPosition : 0,
+      behavior: "smooth",
     });
   };
 
   return (
-    <div className="flex flex-col justify-start items-start fixed top-32 left-24 px-2 sm:px-6 w-[320px] opacity-0 sm:opacity-100">
-      <div className="font-light text-xl sm:ml-6 flex flex-row items-center gap-2">
-        <div className="h-[24px] bg-xopp rounded-sm">
-          <img src="/images/logo.png" className="w-[24px] rounded-sm" />
+    <div
+      className={`flex flex-col font-poppins justify-start items-start fixed top-0 px-2 sm:px-20 w-full py-3 z-50 transition-colors duration-500 ${
+        isScrolled ? "bg-white/10 text-xprimary" : "bg-xprimary text-xmain"
+      }`}
+    >
+      <div className="font-light text-xl sm:ml-6 flex flex-row items-center gap-1">
+        <div className="h-[24px] rounded-sm">
+          <img
+            src={isScrolled ? "/images/logo.png" : "/images/sonuslogowhite.svg"}
+            className="w-[24px] rounded-sm"
+          />
         </div>
-        <div>Sonus</div>
+        <div className="font-medium text-2xl">Sonus</div>
       </div>
-      <div></div>
-      {/* <div className="cursor-pointer py-2 px-4 sm:py-4 sm:px-6 text-[1em] sm:text-[1.2em] h-full rounded-full font-medium text-opp">
-        For you
-      </div> */}
     </div>
   );
 };

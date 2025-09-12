@@ -31,7 +31,14 @@ const Footer = () => {
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 pt-14 pb-10">
         {/* top row */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-row items-center gap-1">
+            <Image
+              src="/images/logo.png"
+              alt="starlight"
+              width={28}
+              height={28}
+              className="mt-1"
+            />
             <div className="text-2xl font-medium tracking-tight">sonus</div>
           </div>
 

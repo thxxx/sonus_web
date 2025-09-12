@@ -10,6 +10,17 @@ import Footer from "@/components/landing/Footer";
 import "../globals.css";
 import "../styles/radix.css";
 import { BottomSheetModal } from "@/components/landing/\bModal";
+import MicSelectorMock from "@/components/landing/Micanim";
+import TranslationToolbarMock from "@/components/landing/RecordAnim";
+import MicContent from "@/components/landing/MicContent";
+import { Speaker, Volume2 } from "lucide-react";
+import { WordFill } from "@/components/landing/Wordfill";
+import TranslationCompareDemo from "@/components/landing/AudioComparison";
+import CtaBand from "@/components/landing/LastSection";
+import FAQ from "@/components/landing/Faq";
+import UseCasesSection from "@/components/landing/UseCase";
+import Platform from "@/components/landing/Platform";
+import Image from "next/image";
 
 // ————————————————————————————————————————————————————————
 // Animated hero that:
@@ -62,7 +73,7 @@ export default function Home() {
   const initialLineWidth = isMobile ? "70vw" : "320px";
 
   return (
-    <div className="font-poppins bg-xmain text-xopp min-h-screen">
+    <div className="bg-xmain text-xopp min-h-screen">
       <Analytics />
       <Head>
         <title>Sonus</title>
@@ -70,115 +81,176 @@ export default function Home() {
           name="description"
           content="Make everyone communicate beyond language."
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon-new.ico" />
       </Head>
-
-      {/* Header appears after the hero expands */}
-      {/* <motion.div initial={{ opacity: 0, y: -8 }} animate={headerControls}> */}
       <Header />
-      {/* </motion.div> */}
-
-      {/* Spacer to keep header off the hero area slightly */}
-      {/* <div className="h-[30px] sm:h-[50px]" /> */}
-
-      {/* ——— Hero Section ——— */}
-      <SectionLayout>
-        <div className="relative w-full flex flex-col items-center justify-center mt-[-26px]">
-          {/* Fullscreen black overlay container for intro animation */}
-          <div className="w-full flex items-center justify-center">
-            {/* <motion.div
-              className="relative overflow-hidden bg-xmain/0 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
-              initial={{
-                opacity: 0,
-                width: initialLineWidth,
-                height: 2,
-                y: 0,
-                borderRadius: 12,
-              }}
-              animate={heroControls}
-              style={{ willChange: "height, transform, width, borderRadius" }}
+      <div className="flex flex-col md:flex-row items-center justify-center bg-xprimary py-[14vh] min-h-[100vh]">
+        <div className="w-full md:pl-32 md:w-[46%] md:text-left text-center">
+          <div className="text-white text-3xl md:text-5xl font-bold">
+            <span className="animate-shine">Speak Like a Native</span> in Any
+            Language, <br />
+            Without Language Classes
+          </div>
+          <div className="text-white/80 text-lg md:text-xl font-light mt-4">
+            Talk naturally and let our real-time voice interpreter do the work.
+            Keep your voice and tone while chatting across any language
+          </div>
+          <div>
+            <button
+              className="bg-white text-xprimary px-8 py-3 rounded-md mt-8 font-semibold cursor-pointer hover:bg-white/90"
+              onClick={() => setOpen(true)}
             >
-              <video
-                className="w-full h-full object-cover opacity-70"
-                autoPlay
-                loop
-                muted
-                playsInline
-              >
-                <source src="/sunset.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </motion.div> */}
-            <div className="h-[200px] w-full">
-              <video
-                className="w-full h-full object-cover opacity-70 rounded-md"
-                autoPlay
-                loop
-                muted
-                playsInline
-              >
-                <source src="/sunset_sm.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
+              Join the Waitlist
+            </button>
           </div>
-          <div className="h-[30px] sm:h-[50px]" />
-
-          {/* Text + CTA reveal */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={pageControls}
-            className="w-full flex flex-col h-[50vh] justify-end items-center sm:justify-start sm:h-full"
-          >
-            <Title>
-              <div className="text-center font-light pt-8 sm:pt-0 text-[0.9em] sm:text-[0.85em] sm:leading-[1.2em] sm:pb-6">
-                Sonus helps everyone
-                <br />
-                flow effortlessly beyond language barriers.
-              </div>
-            </Title>
-
-            <div className="w-full flex justify-center flex-col items-center gap-3 mt-12 sm:mt-8">
-              <button
-                onClick={() => setOpen(true)}
-                className="bg-xopp text-xmain rounded-3xl py-3 px-6 cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
-              >
-                Join waitlist
-              </button>
-              <div className="font-light text-xopp/60 italic text-[0.9em]">
-                Launching in 2025 — stay tuned.
-              </div>
-            </div>
-          </motion.div>
         </div>
-      </SectionLayout>
-
-      {/* ——— Secondary section (copy) ——— */}
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={pageControls}>
-        <SectionLayout>
-          <div className="my-2 w-full font-extralight flex justify-center flex-col text-center sm:text-left">
-            Our goal is to empower a world without language barriers through
-            real-time voice translation that preserves your unique voice,
-            connecting humanity across cultures in authentic conversation.
-            <br />
-            <br />
-            {/* We are creating a realtime interpreter that makes conversations
-            across languages feel effortless, natural, and human.
-            <br />
-            <br />
-            <span className="text-gray-400">
-              We’re a small, driven team with a clear mission:{" "}
-            </span>
-            to remove barriers so everyone can connect, collaborate, and share
-            ideas freely.
-            <br />
-            <br />
-            Language divides us more than we realize.
-            <br />
-            We believe voices should bridge people, not build barriers. */}
+        <div className="relative w-full md:w-[54%] md:pl-12 overflow-hidden py-1">
+          <div className="w-[96vw] md:w-[68vw] mt-12 md:mt-0 ml-2 md:ml-0">
+            <video
+              src="/images/with_image.mp4"
+              className="rounded-xl border-[6px] border-white/0 outline outline-1 outline-white"
+              width={1400}
+              height={900}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
           </div>
-        </SectionLayout>
-      </motion.div>
+        </div>
+      </div>
+
+      <div className="flex flex-col items-center justify-center gap-16 py-24 text-sm md:text-base">
+        <div className="flex flex-col items-center justify-center gap-3">
+          <div className="text-3xl font-semibold">How it works</div>
+          <div className="text-[20px] text-center font-light text-gray-700">
+            It&apos;s like having a personal translator that sounds exactly like
+            you
+          </div>
+        </div>
+        <div className="flex flex-col md:flex-row items-start justify-between w-full max-w-[1080px]">
+          <div className="flex flex-col items-center justify-start w-full max-w-[480px] px-4">
+            <div className="w-full min-h-[390px] md:min-h-[440px]">
+              <div className="w-full">
+                <MicSelectorMock />
+              </div>
+              <div className="w-full mt-4">
+                <div className="w-full rounded-xl shadow-lg">
+                  <div className="min-h-[40px] bg-[#F5F5F5] w-full rounded-t-2xl flex gap-[7px] items-center justify-start px-5">
+                    <div className="h-3.5 w-3.5 bg-[#EF4444] rounded-full"></div>
+                    <div className="h-3.5 w-3.5 bg-[#EBB305] rounded-full"></div>
+                    <div className="h-3.5 w-3.5 bg-[#22C55D] rounded-full"></div>
+                  </div>
+                  <div className="min-h-[80px] bg-white rounded-b-xl">
+                    <TranslationToolbarMock />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full flex flex-col items-center justify-start mt-0 md:mt-8">
+              <div className="text-gray-900 text-xl w-full text-center">
+                Set the mic & Turn on anytime you want.
+              </div>
+              <div className="text-[16px] text-gray-500 mt-4 w-full text-center leading-5">
+                Your audience hears you speaking fluently in their language with
+                your exact voice, creating authentic connections across language
+                barriers.
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col items-center justify-start w-full max-w-[480px] mt-20 md:mt-0 px-4">
+            <div className="w-full min-h-[440px] max-h-[440px]">
+              <div className="w-full rounded-xl shadow-lg">
+                <div className="min-h-[40px] bg-[#F5F5F5] w-full rounded-t-2xl flex gap-[7px] items-center justify-start px-5">
+                  <div className="h-3.5 w-3.5 bg-[#EF4444] rounded-full"></div>
+                  <div className="h-3.5 w-3.5 bg-[#EBB305] rounded-full"></div>
+                  <div className="h-3.5 w-3.5 bg-[#22C55D] rounded-full"></div>
+                </div>
+                <div className="min-h-[80px] bg-white rounded-b-xl p-4">
+                  {/* <MicContent /> */}
+                  <div className="text-sm font-semibold">
+                    You speaking in English
+                  </div>
+                  <WordFill
+                    text="Good morning everyone, let's discuss our Q4 strategy and the new product roadmap we've been developing."
+                    groupSize={1} // 1단어씩
+                    intervalMs={200}
+                    pauseMsAtEnd={5000} // 끝나고 5초 쉬고 반복
+                    startDelayMs={0} // 바로 시작
+                    className="text-[16px] font-medium mt-2 text-gray-500 min-h-[80px]"
+                  />
+                  <div className="text-sm font-semibold">
+                    Your voice in Spanish
+                  </div>
+                  <WordFill
+                    text="Buenos días a todos, discutamos nuestra estrategia del Q4 y la nueva hoja de ruta del producto que hemos estado desarrollando."
+                    groupSize={4} // 4단어씩
+                    intervalMs={800}
+                    pauseMsAtEnd={2400} // 끝나고 5초 쉬고 반복
+                    startDelayMs={1000} // 바로 시작
+                    className="text-[16px] font-medium mt-2 min-h-[80px]"
+                  />
+                  <div className="text-xprimary mt-4 text-sm flex flex-row items-center gap-1">
+                    <Volume2 size={16} />
+                    Real-time translation with your voice
+                  </div>
+
+                  <div className="flex flex-row items-center justify-between mt-12 gap-2">
+                    <div className="rounded-lg bg-[#FAFBFA] py-2 w-full flex flex-col gap-0 items-center justify-center">
+                      <div className="text-gray-500">Translation starts</div>
+                      <div className="font-bold text-xl text-xprimary flex flex-row">
+                        {"<"} 2s{" "}
+                      </div>
+                    </div>
+                    <div className="rounded-lg bg-[#FAFBFA] py-2 w-full flex flex-col gap-0 items-center justify-center">
+                      <div className="text-gray-500">Supports</div>
+                      <div className="font-bold text-xl text-xprimary flex flex-row gap-2 items-end">
+                        23+{" "}
+                        <span className="text-gray-500 text-base font-normal mb-0.5">
+                          languages
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full flex flex-col items-center justify-start mt-8">
+              <div className="text-gray-900 text-xl w-full text-center">
+                Natural translation
+              </div>
+              <div className="text-[16px] text-gray-500 mt-4 w-full text-center leading-5">
+                Real-time interpretation is fundamentally different from
+                document translation. We strive to capture the nuances often
+                left unsaid in conversation and{" "}
+                <span className="bg-yellow-200 text-black/90">
+                  begin translating before a sentence is finished.
+                </span>
+                {/* Your audience hears you speaking fluently
+                in their language with your exact voice, creating authentic
+                connections across language barriers. */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="h-[24px]" />
+
+      <div className="flex flex-col items-center justify-center gap-8 bg-gray-50 py-24">
+        <div className="flex flex-col items-center justify-center gap-3 text-center">
+          <div className="text-3xl font-semibold">Hear the difference</div>
+          <div className="text-[20px] font-light text-gray-700">
+            Compare Sonus' voice preservation and speed with industry leaders
+          </div>
+        </div>
+        <div className="flex flex-row items-start justify-between w-full max-w-[1240px]">
+          <TranslationCompareDemo />
+        </div>
+      </div>
+      <UseCasesSection />
+      <Platform />
+      <FAQ />
+      <CtaBand onClick={() => setOpen(true)} />
       <BottomSheetModal open={open} onClose={() => setOpen(false)} />
 
       <div className="py-16" />
