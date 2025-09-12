@@ -124,7 +124,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center gap-3">
           <div className="text-3xl font-semibold">How it works</div>
           <div className="text-[20px] text-center font-light text-gray-700">
-            It&apos;s like having a personal translator that sounds exactly like
+            It{"'"}s like having a personal translator that sounds exactly like
             you
           </div>
         </div>
