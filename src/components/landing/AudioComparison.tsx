@@ -240,12 +240,16 @@ export default function TranslationCompareDemo() {
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-lg bg-violet-600" />
+                <div className="h-12 w-12 rounded-lg bg-white shadow-sm flex items-center justify-center">
+                  <Image
+                    src="/images/logo.png"
+                    alt="Google"
+                    width={40}
+                    height={40}
+                  />
+                </div>
                 <div>
                   <div className="font-semibold text-lg">Sonus</div>
-                  <div className="text-sm text-zinc-500">
-                    Voice-Preserved Translation
-                  </div>
                 </div>
               </div>
             </div>
@@ -261,7 +265,7 @@ export default function TranslationCompareDemo() {
             <div className="text-gray-600 text-[14px]">{koText}</div>
             <div className="mt-4 flex items-end justify-between">
               <span className="text-xs text-emerald-600">
-                ● <span>Original voice preserved</span>
+                ● <span>Your own voice</span>
               </span>
               <AudioButton label="Play Audio" audioSrc="/audios/eng.mp3" />
             </div>
@@ -284,9 +288,6 @@ export default function TranslationCompareDemo() {
                 </div>
                 <div>
                   <div className="font-semibold text-lg">Google Translate</div>
-                  <div className="text-sm text-zinc-500">
-                    Standard Translation
-                  </div>
                 </div>
               </div>
             </div>
@@ -305,7 +306,7 @@ export default function TranslationCompareDemo() {
             <div className="text-gray-600 text-[14px]">{koText}</div>
             <div className="mt-4 flex items-end justify-between">
               <span className="text-xs text-orange-600">
-                ● <span>Robotic voice · No personality</span>
+                ● <span>Synthetic voice · No personality</span>
               </span>
               <AudioButton
                 label="Play Audio"

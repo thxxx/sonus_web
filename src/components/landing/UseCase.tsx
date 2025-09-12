@@ -37,7 +37,7 @@ export default function UseCasesSection() {
           style={{ fontWeight: 500 }}
           className="text-3xl tracking-[-0.02em] text-[#0F172A] md:text-3xl"
         >
-          Unlock Global Communication
+          Unlock global communication
         </div>
         <p className="mx-auto mt-3 max-w-3xl leading-relaxed text-gray-500">
           From international business meetings to personal travel, Sonus breaks

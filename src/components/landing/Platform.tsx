@@ -38,7 +38,7 @@ export default function Integrations() {
   return (
     <section className="mx-auto max-w-6xl rounded-3xl bg-gradient-to-b from-[#f9f9f9] to-white px-6 py-16 text-center shadow-sm">
       <h2 className="text-2xl text-gray-900 md:text-3xl">
-        Works with Your Favorite Platforms
+        Works with your favorite platforms
       </h2>
       <p className="mx-auto mt-3 max-w-2xl text-gray-500">
         Seamlessly integrate with the communication tools you already use for

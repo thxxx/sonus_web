@@ -132,8 +132,8 @@ export default function TranslationToolbarMock() {
         options={languageOptions}
         onChange={(e) => setTo(e.target.value)}
       />
-      <div className="absolute left-12 top-20 hidden md:flex">
-        <Image src="/images/select.svg" alt="mic" width={120} height={64} />
+      <div className="absolute left-1 top-20 hidden md:flex">
+        <Image src="/images/select.svg" alt="mic" width={180} height={64} />
       </div>
 
       {/* Spacer */}

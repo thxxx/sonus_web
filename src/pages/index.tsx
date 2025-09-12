@@ -21,6 +21,7 @@ import FAQ from "@/components/landing/Faq";
 import UseCasesSection from "@/components/landing/UseCase";
 import Platform from "@/components/landing/Platform";
 import Image from "next/image";
+import NumberAnimation from "@/components/landing/NumberAnimation";
 
 // ————————————————————————————————————————————————————————
 // Animated hero that:
@@ -149,12 +150,12 @@ export default function Home() {
             </div>
             <div className="w-full flex flex-col items-center justify-start mt-0 md:mt-8">
               <div className="text-gray-900 text-xl w-full text-center">
-                Set the mic & Turn on anytime you want.
+                Just turn on your mic whenever you want
               </div>
               <div className="text-[16px] text-gray-500 mt-4 w-full text-center leading-5">
-                Your audience hears you speaking fluently in their language with
-                your exact voice, creating authentic connections across language
-                barriers.
+                Your audience will hear you speaking smoothly in their own
+                language, using your exact voice to create real, natural
+                connections no matter the language
               </div>
             </div>
           </div>
@@ -175,7 +176,7 @@ export default function Home() {
                     text="Good morning everyone, let's discuss our Q4 strategy and the new product roadmap we've been developing."
                     groupSize={1} // 1단어씩
                     intervalMs={200}
-                    pauseMsAtEnd={5000} // 끝나고 5초 쉬고 반복
+                    pauseMsAtEnd={5400} // 끝나고 5초 쉬고 반복
                     startDelayMs={0} // 바로 시작
                     className="text-[16px] font-medium mt-2 text-gray-500 min-h-[80px]"
                   />
@@ -187,7 +188,7 @@ export default function Home() {
                     groupSize={4} // 4단어씩
                     intervalMs={800}
                     pauseMsAtEnd={2400} // 끝나고 5초 쉬고 반복
-                    startDelayMs={1000} // 바로 시작
+                    startDelayMs={1340} // 바로 시작
                     className="text-[16px] font-medium mt-2 min-h-[80px]"
                   />
                   <div className="text-xprimary mt-4 text-sm flex flex-row items-center gap-1">
@@ -199,7 +200,7 @@ export default function Home() {
                     <div className="rounded-lg bg-[#FAFBFA] py-2 w-full flex flex-col gap-0 items-center justify-center">
                       <div className="text-gray-500">Translation starts</div>
                       <div className="font-bold text-xl text-xprimary flex flex-row">
-                        {"<"} 2s{" "}
+                        {"<"} <NumberAnimation />
                       </div>
                     </div>
                     <div className="rounded-lg bg-[#FAFBFA] py-2 w-full flex flex-col gap-0 items-center justify-center">
@@ -217,14 +218,14 @@ export default function Home() {
             </div>
             <div className="w-full flex flex-col items-center justify-start mt-8">
               <div className="text-gray-900 text-xl w-full text-center">
-                Natural translation
+                Contextual Translation
               </div>
               <div className="text-[16px] text-gray-500 mt-4 w-full text-center leading-5">
                 Real-time interpretation is fundamentally different from
-                document translation. We strive to capture the nuances often
-                left unsaid in conversation and{" "}
+                document translation. We focus on capturing the subtle nuances
+                often left unspoken in conversation and{" "}
                 <span className="bg-yellow-200 text-black/90">
-                  begin translating before a sentence is finished.
+                  start translating before a sentence is finished.
                 </span>
                 {/* Your audience hears you speaking fluently
                 in their language with your exact voice, creating authentic

@@ -13,7 +13,7 @@ const faqs: FAQItem[] = [
   },
   {
     q: "What languages are supported?",
-    a: "Sonus currently supports over 30 widely spoken languages with real-time voice translation. We are actively expanding our language offerings and plan to add many more languages soon, enabling seamless communication across an even broader range of cultures and regions.",
+    a: "Sonus currently supports over 23+ widely spoken languages with real-time voice translation. We are actively expanding our language offerings and plan to add many more languages soon, enabling seamless communication across an even broader range of cultures and regions.",
   },
   {
     q: "Is my voice data secure?",
@@ -54,7 +54,7 @@ export default function FAQ() {
 
   return (
     <section className="mx-auto max-w-3xl py-24 pt-28 px-4">
-      <h2 className="text-center text-3xl">Frequently Asked Questions</h2>
+      <h2 className="text-center text-3xl">Frequently asked questions</h2>
       <p className="mt-2 text-center text-gray-500">
         Everything you need to know about Sonus and how it works
       </p>
