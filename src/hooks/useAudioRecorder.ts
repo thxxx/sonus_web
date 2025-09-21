@@ -56,7 +56,17 @@ export function useAudioRecorder() {
   const startRecording = async () => {
     if (status === "recording") return;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          channelCount: 1,
+          sampleRate: 48000, // 브라우저 기본
+          sampleSize: 16, // 일부 브라우저만 반영
+          echoCancellation: true, // 스피커로 재생도 한다면 켜기 (AEC)
+          noiseSuppression: true, // 1차 노이즈 억제
+          autoGainControl: false, // 크기 “과다·펌핑” 문제의 주범 → 끄기
+        },
+        video: false,
+      });
 
       const mt =
         // 최신 크롬/엣지

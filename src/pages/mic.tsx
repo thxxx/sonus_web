@@ -252,7 +252,6 @@ export default function WebRealtimeTranscriber() {
       // 2) ---- ADD: 세션 시작 직후, voice condition 업로드 ----
       (async () => {
         try {
-          // 우선순위: VoiceConditionModal -> (선택) useAudioRecorder 훅 blob
           let voiceBlob: Blob | null = await resolveSampleBlob(
             voiceSample as any
           );
@@ -355,15 +354,15 @@ export default function WebRealtimeTranscriber() {
         if (translatedText.includes("<END>")) {
           const clean = translatedText.replace("<END>", "").trim();
           if (usedForTranslation !== null) {
-            setMyTranscripts((ts) => [...ts, usedForTranslation]);
+            setMyTranscripts((ts) => [usedForTranslation, ...ts]);
           } else {
-            setMyTranscripts((ts) => [...ts, usedForTranslationRef.current]);
+            setMyTranscripts((ts) => [usedForTranslationRef.current, ...ts]);
             usedForTranslationRef.current = "";
             scriptRef.current = scriptRef.current.slice(
               usedForTranslationRef.current.length - scriptRef.current.length
             );
           }
-          setMyTranslates((ts) => [...ts, clean]);
+          setMyTranslates((ts) => [clean, ...ts]);
           setLastTranslation("");
           setLastSentence((prev) =>
             prev.slice(usedForTranslationRef.current.length ?? 0)
@@ -433,7 +432,9 @@ export default function WebRealtimeTranscriber() {
 
     ws.onerror = (err) => {
       console.error("Socket error:", err);
-      alert("Error! 알려주세요. 아마 서버가 꺼졌거나 등등");
+      alert(
+        "Server error! It looks like the temporary GPU server may be down. Please let us know."
+      );
     };
   }, [languageCode, target, ALPHA, voiceSample, outputLanguageCode]);
 
@@ -473,9 +474,15 @@ export default function WebRealtimeTranscriber() {
     // request mic
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
+        // channelCount: 1,
+        // echoCancellation: true,
+        // noiseSuppression: true,
         channelCount: 1,
-        echoCancellation: true,
-        noiseSuppression: true,
+        sampleRate: 48000, // 브라우저 기본
+        sampleSize: 16, // 일부 브라우저만 반영
+        echoCancellation: true, // 스피커로 재생도 한다면 켜기 (AEC)
+        noiseSuppression: true, // 1차 노이즈 억제
+        autoGainControl: false, // 크기 “과다·펌핑” 문제의 주범 → 끄기
       },
       video: false,
     });
@@ -483,8 +490,28 @@ export default function WebRealtimeTranscriber() {
       (window as any).webkitAudioContext)({ sampleRate: 48000 });
 
     const src = audioCtx.createMediaStreamSource(stream);
-    const proc = audioCtx.createScriptProcessor(2048, 1, 1); // deprecated but simple & widely supported
+
+    // (a) High-pass (HPF) 80~120 Hz
+    const hpf = audioCtx.createBiquadFilter();
+    hpf.type = "highpass";
+    hpf.frequency.value = 100;
+
+    // (b) DynamicsCompressor: 소프트 리미터처럼 사용
+    const comp = audioCtx.createDynamicsCompressor();
+    comp.threshold.value = -6; // 피크 보호
+    comp.knee.value = 12;
+    comp.ratio.value = 3;
+    comp.attack.value = 0.003;
+    comp.release.value = 0.05;
+
+    const proc = audioCtx.createScriptProcessor(4096, 1, 1); // deprecated but simple & widely supported
+    // const proc = audioCtx.createScriptProcessor(2048, 1, 1); // deprecated but simple & widely supported
     vadRef.current = createVAD(0.0025, 0.0015, 250);
+
+    src.connect(hpf);
+    hpf.connect(comp);
+    comp.connect(proc);
+    proc.connect(audioCtx.destination);
 
     proc.onaudioprocess = (ev) => {
       const inRate = audioCtx.sampleRate;
@@ -494,9 +521,16 @@ export default function WebRealtimeTranscriber() {
       let sum = 0;
       for (let i = 0; i < input.length; i++) sum += input[i] * input[i];
       const rms = Math.sqrt(sum / input.length);
+      console.log("rms", rms);
+
+      // 1/4 크기로 줄이기
+      const scaled = new Float32Array(input.length);
+      for (let i = 0; i < input.length; i++) {
+        scaled[i] = input[i] * 0.8;
+      }
 
       // resample to 24kHz then encode PCM16 -> base64
-      const mono24k = resampleLinearMono(input, inRate, TARGET_SR);
+      const mono24k = resampleLinearMono(scaled, inRate, TARGET_SR);
       const pcm16 = floatTo16BitPCM(mono24k);
       const audioB64 = int16ToBase64(pcm16);
 
@@ -517,9 +551,6 @@ export default function WebRealtimeTranscriber() {
         // sendAudioCommit();
       }
     };
-
-    src.connect(proc);
-    proc.connect(audioCtx.destination); // required for some browsers to keep processor alive
 
     mediaStreamRef.current = stream;
     audioCtxRef.current = audioCtx;
@@ -579,7 +610,7 @@ export default function WebRealtimeTranscriber() {
   }, [recording, stopMic /*, sendAudioCommit*/]);
 
   return (
-    <div className="w-full min-h-screen bg-xmain text-xopp p-4">
+    <div className="w-full min-h-screen bg-xopp text-xmain p-4">
       <div className="max-w-3xl mx-auto space-y-4">
         <header className="flex items-center justify-between">
           <h1 className="text-xl font-semibold tracking-tight">
@@ -590,9 +621,9 @@ export default function WebRealtimeTranscriber() {
               onClick={recording ? stopMicOnly : startMicOnly}
               className={`px-4 py-2 rounded-2xl border border-white/70 shadow-sm flex items-center gap-2 ${
                 isSessionLoading ? "opacity-50" : "hover:bg-white/10"
-              } ${recording ? "text-red-400" : "text-xopp"}`}
+              } ${recording ? "text-red-400" : "text-xmain"}`}
             >
-              {recording ? "Stop" : "Send Audio"}
+              {recording ? "Stop Sending Audio" : "Record Audio"}
               <span
                 className={`ml-1 inline-block w-2 h-2 rounded-full ${
                   recording ? "bg-red-500" : "bg-white/80"
@@ -604,9 +635,13 @@ export default function WebRealtimeTranscriber() {
               disabled={isSessionLoading}
               className={`px-4 py-2 rounded-2xl border border-white/70 shadow-sm flex items-center gap-2 ${
                 isSessionLoading ? "opacity-50" : "hover:bg-white/10"
-              } ${recording ? "text-red-400" : "text-xopp"}`}
+              } ${recording ? "text-red-400" : "text-xmain"}`}
             >
-              {isSessionLoading ? "Loading…" : connected ? "Stop" : "Start"}
+              {isSessionLoading
+                ? "Loading…"
+                : connected
+                ? "Close Connection"
+                : "Connect"}
               <span
                 className={`ml-1 inline-block w-2 h-2 rounded-full ${
                   connected ? "bg-red-500" : "bg-white/80"
@@ -616,22 +651,22 @@ export default function WebRealtimeTranscriber() {
           </div>
         </header>
 
-        <div className="text-sm text-xopp/60">
-          아직 수정중이라 주의사항이 몇개 있습니다. 1) 조용한 환경에서
-          해야합니다. 실제로는 소음있는 환경에서도 되게 하겠지만 아직은 2)
-          중간에 로직이 한번 꼬이면 이상한 말들을 뱉을 때가 있습니다. ex) 네,
-          네, 네, 네, 네, | 감사합니다.
+        <div className="text-sm text-xmain/60">
+          We’re originally building this as a native app, but in the process of
+          moving it to the web, the way we capture microphone audio is
+          different. As a result, the speech recognition accuracy on the web is
+          relatively lower compared to the app.
           <br />
-          클로닝 하고싶은 목소리를 바꾸실 때는 한번 stop 후 다시 start 하셔야
-          합니다.
-          <br /> cloning voice를 직접 넣지 않으면, 디폴트 목소리로 나옵니다.
-          <br /> start로 웹소켓을 연결한 후 처음 한두번 정도는 latency가 높을 수
-          있습니다.
+          To use, first click Connect button and then click Record Audio button.
+          <br /> If you don’t upload a cloned voice, a default voice will be
+          used.
+          <br /> Right after the first connection, latency may be higher for the
+          first two or three tries.
         </div>
 
         <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
-            <label className="text-sm text-xopp/80">Input Language(My)</label>
+            <label className="text-sm text-xmain/80">Input Language(My)</label>
             <select
               className="bg-transparent outline-none ml-auto"
               value={languageCode}
@@ -645,7 +680,7 @@ export default function WebRealtimeTranscriber() {
             </select>
           </div>
           <div className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
-            <label className="text-sm text-xopp/80">Output Language</label>
+            <label className="text-sm text-xmain/80">Output Language</label>
             <select
               className="bg-transparent outline-none ml-auto"
               value={outputLanguageCode}
@@ -662,7 +697,7 @@ export default function WebRealtimeTranscriber() {
           </div>
 
           {/* <div className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
-            <label className="text-sm text-xopp/80">Target</label>
+            <label className="text-sm text-xmain/80">Target</label>
             <select
               className="bg-transparent outline-none ml-auto"
               value={target}
@@ -679,13 +714,13 @@ export default function WebRealtimeTranscriber() {
         </section>
 
         <section className="flex items-center gap-3">
-          <button
-            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm"
+          {/* <button
+            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm flex items-center gap-2"
             onClick={() => setIsLogging((s) => !s)}
           >
             <input type="checkbox" checked={isLogging} />
             {isLogging ? "Random filler audio ✅" : "Random filler audio ❌"}
-          </button>
+          </button> */}
           {/* <button
             className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm"
             onClick={() => sendAudioCommit()}
@@ -694,15 +729,15 @@ export default function WebRealtimeTranscriber() {
           </button> */}
           <button
             className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm"
-            onClick={() => resetAll()}
-          >
-            Clear
-          </button>
-          <button
-            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm"
             onClick={() => setOpenVoiceModal((s) => !s)}
           >
             {initialSample ? "Use My voice ✅" : "Use My voice ❌"}
+          </button>
+          <button
+            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm"
+            onClick={() => resetAll()}
+          >
+            Clear Messages
           </button>
 
           {openVoiceModal && (
@@ -718,7 +753,7 @@ export default function WebRealtimeTranscriber() {
         </section>
 
         <section className="bg-white/5 rounded-2xl p-4 space-y-3">
-          <div className="text-sm uppercase tracking-wide text-xopp/60">
+          <div className="text-sm uppercase tracking-wide text-xmain/60">
             Speaking
           </div>
           <div className="text-base whitespace-pre-wrap break-words selection:bg-emerald-500/30">
@@ -727,18 +762,18 @@ export default function WebRealtimeTranscriber() {
 
           <div className="pt-3 border-t border-white/10" />
 
-          <div className="text-sm uppercase tracking-wide text-xopp/60">
+          <div className="text-sm uppercase tracking-wide text-xmain/60">
             Current Translation
           </div>
           <div className="text-base whitespace-pre-wrap break-words selection:bg-indigo-500/30">
             {lastTranslation}
           </div>
 
-          {ttsLog && <div className="text-xs text-xopp/60">{ttsLog}</div>}
+          {ttsLog && <div className="text-xs text-xmain/60">{ttsLog}</div>}
         </section>
 
         <section className="bg-white/5 rounded-2xl p-4">
-          <div className="text-sm uppercase tracking-wide text-xopp/60 mb-2">
+          <div className="text-sm uppercase tracking-wide text-xmain/60 mb-2">
             History
           </div>
           <div className="space-y-3">
@@ -748,13 +783,13 @@ export default function WebRealtimeTranscriber() {
                 className="grid grid-cols-1 sm:grid-cols-2 gap-3"
               >
                 <div className="bg-white/5 rounded-xl p-3">
-                  <div className="text-xs text-xopp/60">Original</div>
+                  <div className="text-xs text-xmain/60">Original</div>
                   <div className="text-sm whitespace-pre-wrap break-words">
                     {t}
                   </div>
                 </div>
                 <div className="bg-white/5 rounded-xl p-3">
-                  <div className="text-xs text-xopp/60">Translated</div>
+                  <div className="text-xs text-xmain/60">Translated</div>
                   <div className="text-sm whitespace-pre-wrap break-words">
                     {myTranslates[i] ?? "translating…"}
                   </div>
@@ -764,7 +799,7 @@ export default function WebRealtimeTranscriber() {
           </div>
         </section>
 
-        <footer className="text-center text-xs text-xopp/40 pt-4">
+        <footer className="text-center text-xs text-xmain/40 pt-4">
           WebSocket: wss://{SERVER_NS}-5000.proxy.runpod.net/ws · SR:{" "}
           {TARGET_SR / 1000} kHz
         </footer>

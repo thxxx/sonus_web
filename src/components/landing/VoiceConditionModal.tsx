@@ -116,19 +116,6 @@ export default function VoiceConditionModal({
     return `${m}:${r.toString().padStart(2, "0")}`;
   };
 
-  const handleUse = async () => {
-    if (!blob) return;
-    setError(null);
-    setUploading(true);
-    try {
-      onClose();
-    } catch (e: any) {
-      setError(e?.message ?? "Upload failed");
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const handleReset = () => {
     reset();
     currentSigRef.current = null;
@@ -162,7 +149,11 @@ export default function VoiceConditionModal({
 
         <div className="space-y-4">
           <p className="text-sm text-neutral-500">
-            Record your voice to use it as a conditioning reference.
+            This is test feature. In production, this will be set up on a
+            separate page.
+            <br />
+            To make sure the generated voice matches your own, please record
+            about 10 seconds of your voice in a quiet environment.
           </p>
 
           <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4">
@@ -248,26 +239,6 @@ export default function VoiceConditionModal({
         </div>
 
         <div className="mt-5 flex items-center justify-between"></div>
-        {openExample && (
-          <div className="mt-2 text-sm text-neutral-600">
-            The functionality demonstrated in those videos corresponds to the
-            features we support. (We felt that sharing these existing resources
-            would be more effective than creating our own recordings. :D)
-            <br />
-            <div
-              onClick={() => {
-                window.open(
-                  "https://www.youtube.com/results?search_query=adobe+voice+sound+effect",
-                  "_blank"
-                );
-              }}
-              className="text-blue-500 hover:text-blue-700 cursor-pointer mt-2 flex flex-row gap-1 items-center"
-            >
-              <Star size={15} className="fill-blue-500" />
-              Feature Examples
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

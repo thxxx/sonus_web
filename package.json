@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@picovoice/web-voice-processor": "^4.0.9",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-popover": "1.1.1",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
