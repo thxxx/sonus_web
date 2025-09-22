@@ -229,15 +229,14 @@ export default function WebRealtimeTranscriber() {
   // ---------------------------
   const openSocket = useCallback(async () => {
     const endPoint = target === "mic" ? "ws" : "speakerws";
-    const url = `ws://ws.thesonus.xyz:5000/${endPoint}`;
+    // const url = `ws://ws.thesonus.xyz:5000/${endPoint}`;
     // const url = `ws://61.107.202.12:5000/${endPoint}`;
-    // const url = `wss://qxsuomndj8cec9-5000.proxy.runpod.net/${endPoint}`;
+    const url = `wss://habu1ryav7y0x4-5000.proxy.runpod.net/${endPoint}`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
     console.log("openSocket");
 
     ws.onopen = () => {
-      console.log("테스트");
       // start session
       const openMsg = {
         type: "scriptsession.start",
@@ -652,7 +651,7 @@ export default function WebRealtimeTranscriber() {
         </header>
 
         <div className="text-sm text-xmain/60">
-          We’re originally building this as a native app, but in the process of
+          {/* We’re originally building this as a native app, but in the process of
           moving it to the web, the way we capture microphone audio is
           different. As a result, the speech recognition accuracy on the web is
           relatively lower compared to the app.
@@ -661,7 +660,15 @@ export default function WebRealtimeTranscriber() {
           <br /> If you don’t upload a cloned voice, a default voice will be
           used.
           <br /> Right after the first connection, latency may be higher for the
-          first two or three tries.
+          first two or three tries.  */}
+          Sonus was originally designed as a native app, and the web demo uses a
+          different method to capture microphone audio—so you may notice
+          slightly lower speech recognition accuracy compared to the Mac app.
+          <br /> To try it out, click “Connect” first, then “Record Audio.”
+          <br /> If no custom voice is uploaded, a default voice will be used
+          automatically.
+          <br /> Please note: right after the first connection, you may
+          experience increased latency for the first two or three attempts.
         </div>
 
         <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -731,7 +738,7 @@ export default function WebRealtimeTranscriber() {
             className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm"
             onClick={() => setOpenVoiceModal((s) => !s)}
           >
-            {initialSample ? "Use My voice ✅" : "Use My voice ❌"}
+            {initialSample ? "Use My Voice ✅" : "Use My Voice ❌"}
           </button>
           <button
             className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm"
