@@ -466,9 +466,7 @@ export default function WebRealtimeTranscriber() {
 
   const startMic = useCallback(async () => {
     const ws = wsRef.current;
-    console.log("startMic", ws);
     // if (!ws || ws.readyState !== 1) return;
-    console.log("startMic 2");
 
     // request mic
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -520,7 +518,6 @@ export default function WebRealtimeTranscriber() {
       let sum = 0;
       for (let i = 0; i < input.length; i++) sum += input[i] * input[i];
       const rms = Math.sqrt(sum / input.length);
-      console.log("rms", rms);
 
       // 1/4 크기로 줄이기
       const scaled = new Float32Array(input.length);
