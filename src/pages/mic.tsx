@@ -231,7 +231,7 @@ export default function WebRealtimeTranscriber() {
     const endPoint = target === "mic" ? "ws" : "speakerws";
     // const url = `ws://ws.thesonus.xyz:5000/${endPoint}`;
     // const url = `ws://61.107.202.12:5000/${endPoint}`;
-    const url = `wss://habu1ryav7y0x4-5000.proxy.runpod.net/${endPoint}`;
+    const url = `wss://o9w9kyw31ggxq2-5000.proxy.runpod.net/${endPoint}`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
     console.log("openSocket");
@@ -378,7 +378,7 @@ export default function WebRealtimeTranscriber() {
       } else if (msgType === "tts_audio") {
         // measure TTS latency from voice end to first audio
         if (voiceEndTimeRef.current) {
-          const ms = performance.now() - voiceEndTimeRef.current;
+          const ms = performance.now() - voiceEndTimeRef.current - 300;
           setTtsLog(`TTS first audio in ${ms.toFixed(1)} ms`);
           voiceEndTimeRef.current = 0;
         }
