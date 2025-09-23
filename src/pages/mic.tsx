@@ -234,7 +234,6 @@ export default function WebRealtimeTranscriber() {
     const url = `wss://o9w9kyw31ggxq2-5000.proxy.runpod.net/${endPoint}`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
-    console.log("openSocket");
 
     ws.onopen = () => {
       // start session
