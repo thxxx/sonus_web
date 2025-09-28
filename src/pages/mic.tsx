@@ -698,38 +698,9 @@ export default function WebRealtimeTranscriber() {
               ))}
             </select>
           </div>
-
-          {/* <div className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
-            <label className="text-sm text-xmain/80">Target</label>
-            <select
-              className="bg-transparent outline-none ml-auto"
-              value={target}
-              onChange={(e) => setTarget(e.target.value as STTTarget)}
-            >
-              <option className="bg-neutral-900" value="mic">
-                Mic
-              </option>
-              <option className="bg-neutral-900" value="speaker">
-                Speaker
-              </option>
-            </select>
-          </div> */}
         </section>
 
         <section className="flex items-center gap-3">
-          {/* <button
-            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm flex items-center gap-2"
-            onClick={() => setIsLogging((s) => !s)}
-          >
-            <input type="checkbox" checked={isLogging} />
-            {isLogging ? "Random filler audio ✅" : "Random filler audio ❌"}
-          </button> */}
-          {/* <button
-            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm"
-            onClick={() => sendAudioCommit()}
-          >
-            Send Commit (VAD manual)
-          </button> */}
           <button
             className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm"
             onClick={() => setOpenVoiceModal((s) => !s)}

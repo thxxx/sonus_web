@@ -11,6 +11,14 @@ module.exports = {
         xgray: "#161616", // 변형 색상
       },
       keyframes: {
+        gradientx: {
+          "0%, 100%": { "background-position": "0% 50%" },
+          "50%": { "background-position": "100% 50%" },
+        },
+        gradienty: {
+          "0%, 100%": { "background-position": "50% 0%" },
+          "50%": { "background-position": "50% 100%" },
+        },
         shine: {
           to: { backgroundPosition: "200% center" },
         },
@@ -22,6 +30,8 @@ module.exports = {
       animation: {
         upDown: "upDowns 2s ease-in-out infinite",
         shine: "shine 3s linear infinite",
+        gradientx: "gradientx 6s ease infinite",
+        gradienty: "gradienty 6s ease infinite",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
