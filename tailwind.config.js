@@ -30,8 +30,8 @@ module.exports = {
       animation: {
         upDown: "upDowns 2s ease-in-out infinite",
         shine: "shine 3s linear infinite",
-        gradientx: "gradientx 6s ease infinite",
-        gradienty: "gradienty 6s ease infinite",
+        gradientx: "gradientx 4s ease infinite",
+        gradienty: "gradienty 4s ease infinite",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
