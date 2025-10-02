@@ -152,7 +152,7 @@ Now follow the user’s instructions with this voice and behavior.
   const openSocket = useCallback(async () => {
     const endPoint = "ws";
     // const url = `ws://61.107.202.12:5000/${endPoint}`;
-    const url = `wss://rj6xnlqk7i3tg4-5000.proxy.runpod.net/${endPoint}`;
+    const url = `wss://97vuqsth1npme4-5000.proxy.runpod.net/${endPoint}`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
 
