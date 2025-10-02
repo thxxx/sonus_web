@@ -152,7 +152,7 @@ Now follow the user’s instructions with this voice and behavior.
   const openSocket = useCallback(async () => {
     const endPoint = "ws";
     // const url = `ws://61.107.202.12:5000/${endPoint}`;
-    const url = `wss://afhox2mdysulhl-5000.proxy.runpod.net/${endPoint}`;
+    const url = `wss://rj6xnlqk7i3tg4-5000.proxy.runpod.net/${endPoint}`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
 
@@ -181,7 +181,7 @@ Now follow the user’s instructions with this voice and behavior.
         setIsSessionLoading(false);
         await playAudioOnce("/audios/alarm.mp3", { volume: 0.85 });
 
-        const localUserId = localStorage.getItem("userId");
+        const localUserId = localStorage.getItem("userName");
         if (localUserId) {
           ws.send(
             JSON.stringify({ type: "scriptsession.setname", name: localUserId })
@@ -334,7 +334,7 @@ Now follow the user’s instructions with this voice and behavior.
 
       // scale down a bit
       const scaled = new Float32Array(input.length);
-      for (let i = 0; i < input.length; i++) scaled[i] = input[i] * 0.9;
+      for (let i = 0; i < input.length; i++) scaled[i] = input[i] * 0.95;
 
       const mono24k = resampleLinearMono(scaled, inRate, TARGET_SR);
       const pcm16 = floatTo16BitPCM(mono24k);
