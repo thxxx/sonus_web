@@ -19,17 +19,9 @@ export default function WebRealtimeTranscriber() {
   );
   const [isSessionLoading, setIsSessionLoading] = useState(false);
   const [open, setOpen] = useState(false);
-
   const [scripting, setScripting] = useState("");
   const [micLevel, setMicLevel] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
-
-  const [responses, setResponses] = useState<
-    {
-      type: "user" | "maya";
-      text: string;
-    }[]
-  >([]);
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -230,13 +222,14 @@ export default function WebRealtimeTranscriber() {
       <BottomSheetModal open={open} onClose={() => setOpen(false)} />
 
       <div className="text-center w-full flex flex-col py-20 justify-center items-center px-4 text-black/90">
-        <div>I will let you know when the code is open.</div>
+        <div>I’ll let you know once the code is open.</div>
         <div>
-          If you have any feedback, please contact at khj605123@gmail.com
+          If you have any feedback, feel free to reach out at
+          khj605123@gmail.com.
         </div>
 
         <div className="mt-4 md:w-[70%] w-full">
-          <div>Question : What are you going to do with the waitlist?</div>
+          <div>Question : what are you going to do with the waitlist?</div>
           <div>
             Answer : Nothing, I just need time to refine codes. The reason I’m
             opensourcing the code is that my friend and I originally planned to
